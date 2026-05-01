@@ -1,0 +1,97 @@
+.page-escala { max-width: 100%; }
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.month-label { font-weight: 600; font-size: 15px; min-width: 150px; text-align: center; }
+
+.escala-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  margin-bottom: 24px;
+}
+
+.escala-table {
+  border-collapse: collapse;
+  min-width: 100%;
+  font-size: 12px;
+}
+
+.escala-table th,
+.escala-table td {
+  padding: 6px 5px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.escala-table th {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.escala-table tr:hover td { background: var(--bg-hover); }
+
+.day-col { min-width: 38px; }
+.day-col.sunday  { color: var(--danger); }
+.day-col.saturday { color: var(--warning); }
+.day-num { display: block; font-size: 13px; font-weight: 600; }
+.day-dow { display: block; font-size: 9px; color: var(--text-muted); }
+
+.nurse-col {
+  text-align: left !important;
+  min-width: 180px;
+  position: sticky;
+  left: 0;
+  background: var(--bg-elevated);
+  z-index: 2;
+}
+
+.nurse-name {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: var(--bg-surface);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 12px !important;
+}
+.escala-table tr:hover .nurse-name { background: var(--bg-hover); }
+
+.nurse-initials {
+  width: 26px; height: 26px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+
+.cell-off { background: transparent; }
+
+.total-col { min-width: 52px; font-weight: 600; }
+.total-hours { font-size: 12px; font-weight: 700; color: var(--accent-light); }
+
+.shifts-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-label { font-size: 11px; color: var(--text-secondary); }
