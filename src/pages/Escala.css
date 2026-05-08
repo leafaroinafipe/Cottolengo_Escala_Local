@@ -1,0 +1,541 @@
+/* ════════════════════════════════════════════════════════════════════
+   Página Escala — calendário mensal completo da equipe.
+   Estratégia de fit: table-layout fixed + width 100% para distribuir
+   as 31 colunas de dias igualmente no espaço disponível.
+   ════════════════════════════════════════════════════════════════════ */
+
+.page-escala {
+  max-width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ── Navegador de mês ── */
+.month-nav {
+  display: flex; align-items: center; gap: var(--sp-3);
+  background: var(--bg-surface);
+  border-radius: var(--r-full);
+  padding: 4px;
+  box-shadow: var(--shadow-soft);
+}
+.month-nav .btn {
+  width: 36px; height: 36px;
+  padding: 0; min-width: unset;
+  border-radius: var(--r-full);
+  background: transparent;
+  box-shadow: none;
+  font-size: 18px;
+}
+.month-nav .btn:hover { background: var(--bg-elevated); }
+.month-label {
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 140px;
+  text-align: center;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+}
+
+/* ── Agrupamento direito do header (botão + nav) ── */
+.escala-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ── Badge de status de publicação ── */
+.pub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  white-space: nowrap;
+}
+.pub-badge--on {
+  color: #22c55e;
+  background: rgba(34, 197, 94, 0.12);
+}
+.pub-badge--off {
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+}
+
+/* ── Preview banner ── */
+.preview-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px 14px;
+  margin-bottom: var(--sp-4);
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--warning);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ── Wrapper da tabela ── */
+.escala-wrapper {
+  overflow-x: auto;
+  border-radius: var(--r-xl);
+  background: var(--bg-surface);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+/* ── Tabela ── */
+.escala-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 12.5px;
+}
+
+.escala-table th,
+.escala-table td {
+  padding: 8px 2px;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--divider);
+  background: var(--bg-surface);
+  height: 52px;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+/* ── Header ── */
+.escala-table thead th {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1px solid var(--border-strong);
+  height: 60px;
+  padding: 6px 2px;
+}
+
+.day-col {
+  min-width: 28px;
+  width: auto;
+}
+.day-col.sunday   { color: var(--accent); background: rgba(242, 94, 39, 0.05); }
+.day-col.saturday { color: var(--accent-bright); background: rgba(255, 142, 92, 0.04); }
+
+.escala-table tbody td.day-cell--sunday   { background: rgba(242, 94, 39, 0.04); }
+.escala-table tbody td.day-cell--saturday { background: rgba(255, 142, 92, 0.03); }
+
+.day-num {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.day-dow {
+  display: block;
+  font-size: 9.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 3px;
+  font-weight: 600;
+}
+.day-col.sunday .day-dow,
+.day-col.saturday .day-dow { color: inherit; opacity: 0.7; }
+
+/* Hoje destacado */
+.day-col.today {
+  background: var(--accent-grad);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+.day-col.today .day-num,
+.day-col.today .day-dow { color: #fff; }
+.escala-table tbody td.day-cell--today {
+  background: rgba(242, 94, 39, 0.10);
+  position: relative;
+}
+.escala-table tbody td.day-cell--today::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-left: 1.5px solid var(--accent);
+  border-right: 1.5px solid var(--accent);
+  pointer-events: none;
+}
+
+/* ── Linha (hover suave) ── */
+.escala-table tbody tr:hover td { background-color: var(--bg-elevated); }
+.escala-table tbody tr:hover td.day-cell--sunday   { background-color: rgba(242, 94, 39, 0.10); }
+.escala-table tbody tr:hover td.day-cell--saturday { background-color: rgba(255, 142, 92, 0.08); }
+.escala-table tbody tr:hover td.day-cell--today    { background-color: rgba(242, 94, 39, 0.18); }
+
+/* ── Coluna sticky de funcionária — alargada para nomes completos ── */
+.nurse-col {
+  text-align: left !important;
+  width: 200px;
+  min-width: 200px;
+  position: sticky;
+  left: 0;
+  background: var(--bg-elevated);
+  z-index: 3 !important;
+  box-shadow: 6px 0 12px rgba(0,0,0,0.25);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding-left: 14px !important;
+}
+
+.nurse-name {
+  text-align: left !important;
+  position: sticky;
+  left: 0;
+  background: var(--bg-surface);
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-left: 14px !important;
+  z-index: 1;
+  box-shadow: 6px 0 12px rgba(0,0,0,0.20);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+  min-width: 200px;
+}
+.escala-table tbody tr:hover .nurse-name { background-color: var(--bg-elevated); }
+
+/* Avatar */
+.nurse-initials {
+  width: 28px; height: 28px;
+  background: var(--accent-grad);
+  border-radius: var(--r-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  letter-spacing: 0.02em;
+}
+
+/* ── Chips de turno ── */
+.shift-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: var(--r-sm);
+  letter-spacing: 0.04em;
+  min-width: 28px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.30);
+  position: relative;
+  overflow: hidden;
+}
+.shift-chip::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15), rgba(0,0,0,0.05));
+  pointer-events: none;
+}
+
+/* OFF discreto */
+.cell-off { background: transparent; }
+.cell-off::after {
+  content: '·';
+  color: var(--text-disabled);
+  font-size: 20px;
+  line-height: 0;
+  opacity: 0.5;
+}
+
+/* ── Legenda ── */
+.shifts-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3) var(--sp-5);
+  background: var(--bg-surface);
+  border-radius: var(--r-xl);
+  padding: var(--sp-4) var(--sp-5);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--sp-5);
+}
+.legend-item  { display: flex; align-items: center; gap: var(--sp-2); }
+.legend-label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+
+/* ── Matriz de estatísticas ── */
+.stats-matrix {
+  background: var(--bg-surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-4);
+}
+.stats-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--sp-3);
+}
+.stats-wrapper {
+  overflow-x: auto;
+}
+.stats-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+}
+.stats-table th,
+.stats-table td {
+  padding: 7px 8px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.stats-table thead th {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--divider);
+  padding-bottom: 10px;
+}
+.stats-table tbody tr {
+  border-bottom: 1px solid var(--divider);
+  transition: background var(--transition);
+}
+.stats-table tbody tr:last-child { border-bottom: none; }
+.stats-table tbody tr:hover { background: var(--bg-elevated); }
+
+/* Coluna de nome na matriz */
+.stats-nurse-col {
+  text-align: left !important;
+  min-width: 180px;
+}
+.stats-nurse-name {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  text-align: left;
+  font-weight: 600;
+  font-size: 12.5px;
+  color: var(--text-primary);
+}
+
+/* Colunas de turno */
+.stats-shift-col { min-width: 38px; }
+
+/* Separador visual entre grupos de colunas */
+.stats-sep {
+  width: 1px;
+  padding: 0 !important;
+  background: var(--divider);
+}
+
+/* Colunas de dia da semana */
+.stats-dow-col {
+  min-width: 34px;
+  color: var(--text-muted) !important;
+}
+
+/* Coluna de total de horas */
+.stats-total-col { min-width: 52px; }
+.stats-total {
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+/* Valor numérico */
+.stats-val {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.stats-zero { color: var(--text-disabled); font-weight: 400; }
+
+/* ── Modal de edição de célula ── */
+.cell-edit-modal { max-width: 400px; width: 100%; }
+
+.cell-edit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--sp-4);
+}
+.cell-edit-header h3 { margin: 0 0 2px; }
+
+.cell-edit-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-bottom: var(--sp-2);
+}
+
+.cell-edit-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: var(--bg-elevated);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+  text-align: left;
+  width: 100%;
+}
+.cell-edit-btn:hover:not(:disabled) {
+  background: var(--bg-recessed);
+  border-color: var(--border);
+}
+.cell-edit-btn--active {
+  border-color: var(--accent) !important;
+  background: var(--accent-soft) !important;
+}
+.cell-edit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.cell-edit-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.cell-edit-hours {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cursor pointer nas células clicáveis do calendário */
+.escala-table tbody td:not(.nurse-name) {
+  cursor: pointer;
+}
+.escala-table tbody td:not(.nurse-name):hover {
+  outline: 1.5px solid var(--accent-soft);
+  outline-offset: -1px;
+}
+
+
+/* ── Menu de ações (⋯) ── */
+.escala-action-menu { position: relative; }
+
+.escala-menu-trigger {
+  width: 36px; height: 36px;
+  border-radius: var(--r-full);
+  background: var(--bg-surface);
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-soft);
+  transition: background var(--transition), color var(--transition);
+  flex-shrink: 0;
+}
+.escala-menu-trigger:hover,
+.escala-menu-trigger.open { background: var(--bg-elevated); color: var(--text-primary); }
+
+.escala-action-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-raised);
+  padding: 6px;
+  z-index: 200;
+  animation: dropdown-in 140ms ease;
+}
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.escala-action-item {
+  display: flex; align-items: center; gap: var(--sp-2);
+  width: 100%; padding: 9px 12px;
+  border-radius: var(--r-md); border: none;
+  background: transparent; color: var(--text-primary);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background var(--transition); text-align: left;
+}
+.escala-action-item:hover:not(:disabled) { background: var(--bg-recessed); }
+.escala-action-item:disabled { opacity: 0.45; cursor: not-allowed; }
+.escala-action-item--danger { color: var(--danger); }
+.escala-action-item--danger:hover:not(:disabled) { background: var(--danger-bg); }
+.escala-action-icon {
+  width: 20px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; font-size: 14px;
+}
+.escala-action-divider { height: 1px; background: var(--divider); margin: 4px 6px; }
+
+/* ── Impressão ── */
+@page { size: landscape; margin: 10mm; }
+
+@media print {
+  .sidebar, .page-header, .escala-header-actions,
+  .preview-banner, .stats-matrix, .shifts-legend,
+  .modal-backdrop, .toast-bar { display: none !important; }
+
+  body, .app-main, .page-escala {
+    margin: 0 !important; padding: 0 !important;
+    background: #fff !important; color: #000 !important;
+  }
+  .escala-wrapper {
+    box-shadow: none !important; border-radius: 0 !important;
+    margin: 0 !important; overflow: visible !important;
+  }
+  .escala-table { font-size: 9px !important; table-layout: fixed !important; }
+  .escala-table th, .escala-table td {
+    background: #fff !important; border: 0.5px solid #ccc !important;
+    height: 28px !important; padding: 2px 1px !important; color: #000 !important;
+  }
+  .nurse-col, .nurse-name {
+    width: 120px !important; min-width: 120px !important;
+    background: #f5f5f5 !important; color: #000 !important; box-shadow: none !important;
+  }
+  .shift-chip {
+    font-size: 8px !important; padding: 2px 3px !important; box-shadow: none !important;
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+  .day-col.sunday { background: #fff5f0 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .day-col.today  { background: #fff !important; color: #000 !important; box-shadow: none !important; }
+  .escala-table tbody td.day-cell--today { background: #fff5f0 !important; }
+  .escala-table tbody td.day-cell--today::after { display: none !important; }
+  .nurse-initials { display: none !important; }
+  .cell-off::after { display: none !important; }
+}
+
+/* ── Responsivo ── */
+@media (max-width: 1100px) {
+  .day-col { min-width: 32px; }
+  .nurse-col, .nurse-name { width: 170px; min-width: 170px; font-size: 11.5px; }
+}
+@media (max-width: 900px) {
+  .day-col { min-width: 36px; }
+  .escala-table { font-size: 11.5px; }
+  .shift-chip { font-size: 10px; padding: 3px 5px; min-width: 24px; }
+  .gen-fab { bottom: 20px; right: 20px; }
+}

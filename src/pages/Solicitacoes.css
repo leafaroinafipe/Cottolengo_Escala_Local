@@ -1,0 +1,426 @@
+/* ════════════════════════════════════════════════════════════════════
+   Solicitações — central de aprovação com cards expand/collapse
+   ════════════════════════════════════════════════════════════════════ */
+
+.page-sol { max-width: 900px; }
+
+/* ── Toolbar ── */
+.sol-toolbar {
+  display: flex;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+
+.sol-search {
+  position: relative;
+  flex: 1 1 280px;
+  min-width: 220px;
+}
+.sol-search-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.sol-search input {
+  width: 100%;
+  padding: 11px 38px 11px 40px;
+  background: var(--bg-recessed);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-full);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  box-shadow: var(--shadow-pressed);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.sol-search input::placeholder { color: var(--text-muted); }
+.sol-search input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-pressed), 0 0 0 4px var(--accent-soft);
+}
+.sol-search-clear {
+  position: absolute;
+  right: 8px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 22px;
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  border: none;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.sol-search-clear:hover { background: var(--danger-bg); color: var(--danger); }
+
+.sol-period-select {
+  width: auto;
+  min-width: 180px;
+  padding: 11px 14px;
+  background: var(--bg-surface);
+  border: none;
+  border-radius: var(--r-full);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.sol-period-select:hover { background: var(--bg-elevated); }
+.sol-period-select:focus { outline: none; box-shadow: var(--shadow-soft), 0 0 0 4px var(--accent-soft); }
+
+/* ── Tabs ── */
+.page-sol .filter-tabs { margin-bottom: var(--sp-4); }
+
+/* ── Lista ── */
+.requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ══════════════════════════════════════════════
+   Card expand/collapse
+   ══════════════════════════════════════════════ */
+.req-card {
+  background: var(--bg-surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow var(--transition);
+}
+.req-card:hover { box-shadow: var(--shadow-raised); }
+
+/* Faixa colorida lateral */
+.req-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+}
+.req-card--accent::before  { background: var(--accent); }
+.req-card--info::before    { background: var(--info); }
+.req-card--success::before { background: var(--success); }
+
+/* Destacar card aberto */
+.req-card--open {
+  box-shadow: var(--shadow-raised);
+}
+
+/* ── Cabeçalho ── */
+.req-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 18px 12px 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition);
+}
+.req-header:hover { background: var(--bg-elevated); }
+
+/* Linha superior: tipo + badges/chevron */
+.req-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+/* Linha inferior: funcionária + preview de datas */
+.req-header-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.req-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.req-header-nurse {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.req-type-icon { font-size: 15px; line-height: 1; flex-shrink: 0; }
+.req-type-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Mini avatar inline no header */
+.req-avatar-sm {
+  width: 22px; height: 22px;
+  background: var(--accent-grad);
+  color: #fff;
+  border-radius: var(--r-full);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.req-nurse-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* Preview compacto de datas — sempre visível */
+.req-preview {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.req-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Chevron animado */
+.req-chevron {
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.req-chevron--up { transform: rotate(180deg); }
+
+/* ── Corpo expandido ── */
+.req-body-expanded {
+  padding: 0 18px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--divider);
+  padding-top: 14px;
+}
+
+/* ── Datas ── */
+.req-dates {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  background: var(--bg-recessed);
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-pressed);
+  font-size: 12.5px;
+}
+.req-date-pair {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.req-date-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.req-date-value {
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.req-shift-tag {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  letter-spacing: 0.02em;
+}
+.req-date-arrow {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+}
+.req-motivo { font-size: 12.5px; color: var(--text-secondary); word-break: break-word; }
+.req-motivo-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--text-muted); margin-right: 4px;
+}
+
+/* ── Footer de meta ── */
+.req-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+.req-meta { display: inline-flex; align-items: center; gap: 4px; }
+.req-meta svg { flex-shrink: 0; opacity: 0.7; }
+.req-obs, .req-obs-coord {
+  max-width: 360px; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; cursor: help;
+}
+.req-obs-coord { color: var(--accent-bright); }
+
+/* ── Linha de ações ── */
+.req-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-top: 4px;
+  border-top: 1px solid var(--divider);
+}
+.req-actions-secondary,
+.req-actions-primary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Botões de ação ── */
+.req-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: var(--r-md);
+  font-size: 12.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+  white-space: nowrap;
+}
+.req-btn:active:not(:disabled) { transform: scale(0.96); }
+.req-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.req-btn--edit {
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-soft);
+}
+.req-btn--edit:hover:not(:disabled) { background: var(--bg-recessed); color: var(--text-primary); }
+
+.req-btn--delete {
+  background: var(--bg-elevated);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-soft);
+}
+.req-btn--delete:hover:not(:disabled) { background: var(--danger-bg); color: var(--danger); }
+
+.req-btn--confirm-del {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(239,68,68,0.30);
+}
+.req-btn--confirm-del:hover:not(:disabled) { box-shadow: 0 6px 18px rgba(239,68,68,0.45); }
+
+.req-btn--reject {
+  background: var(--bg-elevated);
+  color: var(--danger);
+  border: 1.5px solid var(--danger);
+  box-shadow: none;
+}
+.req-btn--reject:hover:not(:disabled) { background: var(--danger-bg); }
+
+.req-btn--approve {
+  background: var(--success);
+  color: #062b22;
+  box-shadow: 0 4px 12px rgba(52,211,153,0.30);
+}
+.req-btn--approve:hover:not(:disabled) { box-shadow: 0 6px 18px rgba(52,211,153,0.45); }
+
+/* ── Modal de edição ── */
+.modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.modal-header-row h3 { margin: 0; font-size: 16px; }
+.modal-close-btn {
+  width: 28px; height: 28px;
+  background: var(--bg-elevated);
+  border: none;
+  border-radius: var(--r-full);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+.modal-close-btn:hover { background: var(--danger-bg); color: var(--danger); }
+
+.modal-nurse-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-footer-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 640px) {
+  .req-nurse-name { max-width: 120px; }
+  .req-actions-row { flex-direction: column; align-items: stretch; }
+  .req-actions-secondary, .req-actions-primary { justify-content: stretch; }
+  .req-btn { flex: 1; justify-content: center; }
+  .form-row-2 { grid-template-columns: 1fr; }
+}

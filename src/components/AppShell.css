@@ -1,0 +1,21 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-canvas);
+}
+
+/* Margin fixa = rail (sidebar expand e' overlay, nao empurra conteúdo).
+ * Isso garante que a tabela de Escala / cards / etc. nao fiquem se mexendo
+ * toda vez que o cursor passa pela sidebar. */
+.app-main {
+  flex: 1;
+  margin-left: var(--sidebar-w-rail);
+  padding: var(--sp-6) var(--sp-6);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg-canvas);
+}
+
+@media (max-width: 900px) {
+  .app-main { padding: var(--sp-4) var(--sp-3); }
+}
